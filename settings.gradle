@@ -1,0 +1,3 @@
+rootProject.name = 'machine-learning-examples'
+include 'linear-regression'
+

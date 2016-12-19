@@ -1,0 +1,21 @@
+allprojects {
+  group = 'org.ar.ml.examples'
+  version = '1.0-SNAPSHOT'
+}
+
+subprojects {
+  apply plugin: 'java'
+  sourceCompatibility = 1.8
+  targetCompatibility = 1.8
+
+  repositories {
+    jcenter()
+    mavenLocal()
+    mavenCentral()
+  }
+}
+
+ext {
+  wekaVersion = '3.8.0'
+  junit = '4.12'
+}
