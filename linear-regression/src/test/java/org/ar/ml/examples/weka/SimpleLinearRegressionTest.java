@@ -29,7 +29,7 @@ public class SimpleLinearRegressionTest {
     Instances rawDataSet = simpleLinearRegression
         .openTrainingDataSet(Paths.get(getClass().getClassLoader().getResource(DATA_SET_PATH).toURI()).toFile());
 
-    Instances preparedDataSet = simpleLinearRegression.filterOutAllTextualFeatures(rawDataSet);
+    Instances preparedDataSet = simpleLinearRegression.filterOutAllTextualFeatures(rawDataSet, true);
 
     LinearRegression linearRegression = simpleLinearRegression
         .buildLinearRegressionModel(preparedDataSet, getFeatureIndex(TARGET_VARIABLE_NAME, preparedDataSet));

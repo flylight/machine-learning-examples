@@ -2,10 +2,8 @@ package org.ar.ml.examples.weka;
 
 import weka.classifiers.functions.LinearRegression;
 import weka.core.Attribute;
-import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.CSVLoader;
-import weka.core.converters.ConverterUtils;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
@@ -20,16 +18,32 @@ import java.util.List;
  */
 public class SimpleLinearRegression {
 
+  /**
+   * Read CSV data set into {@link Instances} data container.
+   *
+   * @param dataSet Data set file in CSV format.
+   * @return {@link Instances} data set container.
+   * @throws IOException May throe exception when read data from file.
+   */
   public Instances openTrainingDataSet(File dataSet) throws IOException {
     CSVLoader loader = new CSVLoader();
     loader.setSource(dataSet);
     return loader.getDataSet();
   }
 
-  public Instances filterOutAllTextualFeatures(Instances rawDataSet) throws Exception {
+  /**
+   * Filter out all textual features as this simple version can works only with numerical feature types.
+   * @param rawDataSet Raw data set.
+   * @param removeFirstColumn Remove first column if it contain ordering number.
+   * @return Filtered data set.
+   * @throws Exception may throw exception when process data set.
+   */
+  public Instances filterOutAllTextualFeatures(Instances rawDataSet, boolean removeFirstColumn) throws Exception {
     List<String> indexesToRemove = new ArrayList<>();
-    //Add first column into removing as it show order number in data set
-    indexesToRemove.add("1");
+    if (removeFirstColumn) {
+      //Add first column into removing as it show order number in data set
+      indexesToRemove.add("1");
+    }
 
     for (int i = 0; i < rawDataSet.numAttributes(); i++) {
       Attribute attribute = rawDataSet.attribute(i);
@@ -51,11 +65,19 @@ public class SimpleLinearRegression {
     return Filter.useFilter(rawDataSet, remove);
   }
 
+  /**
+   * Build {@link LinearRegression} model based on training data set and target variable index.
+   *
+   * @param trainingDataSet Training data set.
+   * @param targetVariableIndex Target valuable index.
+   * @return Trained and ready to use LinearRegression model.
+   * @throws Exception May throw exception when build classifier.
+   */
   public LinearRegression buildLinearRegressionModel(Instances trainingDataSet, int targetVariableIndex) throws Exception {
     trainingDataSet.setClassIndex(targetVariableIndex);
 
     LinearRegression linearRegressionModel = new LinearRegression();
-    //Disable selection methods
+    //Disable selection methods to keep all features even it is not so important for result
     linearRegressionModel.setOptions(new String[]{"-S", "1"});
     linearRegressionModel.buildClassifier(trainingDataSet);
 
