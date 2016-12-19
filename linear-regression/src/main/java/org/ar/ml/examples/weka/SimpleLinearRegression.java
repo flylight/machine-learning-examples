@@ -28,6 +28,9 @@ public class SimpleLinearRegression {
 
   public Instances filterOutAllTextualFeatures(Instances rawDataSet) throws Exception {
     List<String> indexesToRemove = new ArrayList<>();
+    //Add first column into removing as it show order number in data set
+    indexesToRemove.add("1");
+
     for (int i = 0; i < rawDataSet.numAttributes(); i++) {
       Attribute attribute = rawDataSet.attribute(i);
       if (!attribute.isNumeric()) {
@@ -52,9 +55,9 @@ public class SimpleLinearRegression {
     trainingDataSet.setClassIndex(targetVariableIndex);
 
     LinearRegression linearRegressionModel = new LinearRegression();
+    //Disable selection methods
+    linearRegressionModel.setOptions(new String[]{"-S", "1"});
     linearRegressionModel.buildClassifier(trainingDataSet);
-    //just to show more information when print this object
-    linearRegressionModel.setOutputAdditionalStats(true);
 
     return linearRegressionModel;
   }
