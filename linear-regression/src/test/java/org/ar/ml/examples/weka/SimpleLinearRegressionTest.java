@@ -31,7 +31,7 @@ public class SimpleLinearRegressionTest {
     SimpleLinearRegression simpleLinearRegression = new SimpleLinearRegression(dataSetFile, true, 2);
 
     //WHEN
-    Instances preparedDataSet = simpleLinearRegression.getTrainingDataSet();
+    Instances preparedDataSet = simpleLinearRegression.getDataSet();
     Instance searchInstance1 = preparedDataSet.firstInstance();
     searchInstance1.setValue(getFeatureIndex(TARGET_VARIABLE_NAME, preparedDataSet), 0);
     searchInstance1.setValue(getFeatureIndex(EXPERIENCE_FEATURE_NAME, preparedDataSet), 7);

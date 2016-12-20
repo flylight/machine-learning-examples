@@ -5,13 +5,9 @@ import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.CSVLoader;
-import weka.filters.Filter;
-import weka.filters.unsupervised.attribute.Remove;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class show how to use Weka library to create simple linear regression model to predict
@@ -20,7 +16,7 @@ import java.util.List;
 public class SimpleLinearRegression {
 
   private final LinearRegression linearRegressionModel;
-  private final Instances trainingDataSet;
+  private final Instances dataSet;
   /**
    * Create {@link SimpleLinearRegression} object. This object use provided data set file in CSV
    * format and other properties to build and train linear regression using just numerical features.
@@ -32,17 +28,17 @@ public class SimpleLinearRegression {
    */
   public SimpleLinearRegression(File dataSetFile, boolean removeFirstColumn,
                                 int targetVariableIndex) throws Exception {
-    Instances rawDataSet = openTrainingDataSet(dataSetFile);
-    String targetVariableName = rawDataSet.attribute(targetVariableIndex).name();
+    dataSet = openTrainingDataSet(dataSetFile);
+    String targetVariableName = dataSet.attribute(targetVariableIndex).name();
 
-    trainingDataSet = filterOutAllTextualFeatures(rawDataSet, removeFirstColumn);
+    filterOutAllTextualFeatures(dataSet, removeFirstColumn);
 
-    trainingDataSet.setClassIndex(trainingDataSet.attribute(targetVariableName).index());
+    dataSet.setClassIndex(dataSet.attribute(targetVariableName).index());
 
     linearRegressionModel = new LinearRegression();
     //Disable selection methods to keep all features even it is not so important for result
     linearRegressionModel.setOptions(new String[]{"-S", "1"});
-    linearRegressionModel.buildClassifier(trainingDataSet);
+    linearRegressionModel.buildClassifier(dataSet);
   }
 
   /**
@@ -55,8 +51,8 @@ public class SimpleLinearRegression {
     return linearRegressionModel.classifyInstance(instanceToPredict);
   }
 
-  public Instances getTrainingDataSet() {
-    return trainingDataSet;
+  public Instances getDataSet() {
+    return dataSet;
   }
 
   /**
@@ -73,36 +69,15 @@ public class SimpleLinearRegression {
   }
 
   /**
-   * Filter out all textual features as this simple version can works only with numerical feature types.
-   * @param rawDataSet Raw data set.
-   * @param removeFirstColumn Remove first column if it contain ordering number.
-   * @return Filtered data set.
-   * @throws Exception may throw exception when process data set.
+   * Delete all textual paramater and leave only numerical types to simplify processing.
+   * @param rawDataSet Data Set to be processed.
+   * @param removeFirstColumn Remove first column from data set or no. Used when first column
+   *                          represent numerical order ot items in data set.
    */
-  private Instances filterOutAllTextualFeatures(Instances rawDataSet, boolean removeFirstColumn) throws Exception {
-    List<String> indexesToRemove = new ArrayList<>();
+  private void filterOutAllTextualFeatures(Instances rawDataSet, boolean removeFirstColumn) {
     if (removeFirstColumn) {
-      //Add first column into removing as it show order number in data set
-      indexesToRemove.add("1");
+      rawDataSet.deleteAttributeAt(0);
     }
-
-    for (int i = 0; i < rawDataSet.numAttributes(); i++) {
-      Attribute attribute = rawDataSet.attribute(i);
-      if (!attribute.isNumeric()) {
-        //Weka contain attributes by indexes started from 0 (zero) but removing functionality
-        //use indexes starting from 1 so index should be incremented by 1.
-        indexesToRemove.add(String.valueOf(i+1));
-      }
-    }
-
-    String[] options = new String[2];
-    options[0] = "-R";
-    options[1] = String.join(",", indexesToRemove);
-
-    Remove remove = new Remove();
-    remove.setOptions(options);
-    remove.setInputFormat(rawDataSet);
-
-    return Filter.useFilter(rawDataSet, remove);
+    rawDataSet.deleteAttributeType(Attribute.NOMINAL);
   }
 }
