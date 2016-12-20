@@ -38,7 +38,7 @@ linear regression model using data set based only on Numerical features.
 
 
 
-**Example for Simple Linear Regression usage**
+*Example for Simple Linear Regression usage*
 
 ```
 // Create simple regression regression class using data set file, target variable index and define TRUE as we have to
