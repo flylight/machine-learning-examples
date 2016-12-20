@@ -7,6 +7,7 @@ import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 
+import java.io.File;
 import java.nio.file.Paths;
 
 import static org.junit.Assert.assertTrue;
@@ -25,16 +26,12 @@ public class SimpleLinearRegressionTest {
   @Test
   public void predictSalaryTest() throws Exception {
     //GIVEN
-    SimpleLinearRegression simpleLinearRegression = new SimpleLinearRegression();
-    Instances rawDataSet = simpleLinearRegression
-        .openTrainingDataSet(Paths.get(getClass().getClassLoader().getResource(DATA_SET_PATH).toURI()).toFile());
+    File dataSetFile = Paths.get(getClass().getClassLoader().getResource(DATA_SET_PATH).toURI()).toFile();
 
-    Instances preparedDataSet = simpleLinearRegression.filterOutAllTextualFeatures(rawDataSet, true);
-
-    LinearRegression linearRegression = simpleLinearRegression
-        .buildLinearRegressionModel(preparedDataSet, getFeatureIndex(TARGET_VARIABLE_NAME, preparedDataSet));
+    SimpleLinearRegression simpleLinearRegression = new SimpleLinearRegression(dataSetFile, true, 2);
 
     //WHEN
+    Instances preparedDataSet = simpleLinearRegression.getTrainingDataSet();
     Instance searchInstance1 = preparedDataSet.firstInstance();
     searchInstance1.setValue(getFeatureIndex(TARGET_VARIABLE_NAME, preparedDataSet), 0);
     searchInstance1.setValue(getFeatureIndex(EXPERIENCE_FEATURE_NAME, preparedDataSet), 7);
@@ -50,8 +47,8 @@ public class SimpleLinearRegressionTest {
     searchInstance2.setValue(getFeatureIndex(CURRENT_JOB_EXP_FEATURE_NAME, preparedDataSet), 0.5);
 
     //THEN
-    double searchInstance1Result = linearRegression.classifyInstance(searchInstance1);
-    double searchInstance2Result = linearRegression.classifyInstance(searchInstance2);
+    double searchInstance1Result = simpleLinearRegression.predict(searchInstance1);
+    double searchInstance2Result = simpleLinearRegression.predict(searchInstance2);
 
     assertTrue(searchInstance1Result > searchInstance2Result);
   }
