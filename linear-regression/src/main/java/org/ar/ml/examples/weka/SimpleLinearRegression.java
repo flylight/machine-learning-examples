@@ -31,7 +31,7 @@ public class SimpleLinearRegression {
     dataSet = openTrainingDataSet(dataSetFile);
     String targetVariableName = dataSet.attribute(targetVariableIndex).name();
 
-    filterOutAllTextualFeatures(dataSet, removeFirstColumn);
+    filterOutAllTextualFeatures(removeFirstColumn);
 
     dataSet.setClassIndex(dataSet.attribute(targetVariableName).index());
 
@@ -70,14 +70,14 @@ public class SimpleLinearRegression {
 
   /**
    * Delete all textual paramater and leave only numerical types to simplify processing.
-   * @param rawDataSet Data Set to be processed.
    * @param removeFirstColumn Remove first column from data set or no. Used when first column
    *                          represent numerical order ot items in data set.
    */
-  private void filterOutAllTextualFeatures(Instances rawDataSet, boolean removeFirstColumn) {
+  private void filterOutAllTextualFeatures(boolean removeFirstColumn) {
     if (removeFirstColumn) {
-      rawDataSet.deleteAttributeAt(0);
+      dataSet.deleteAttributeAt(0);
     }
-    rawDataSet.deleteAttributeType(Attribute.NOMINAL);
+    dataSet.deleteAttributeType(Attribute.NOMINAL);
+    dataSet.deleteStringAttributes();
   }
 }
