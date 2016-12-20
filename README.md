@@ -9,6 +9,26 @@ Both approaches retrieve data from CSV data set file provided by user but Simple
 textual features and keeps only numerical. It will simplify argolithm but decrease precision of prediction result. ComplexLinearRegression will process all data set and replace all textual features with a set of possible values as feature
 where corresponded feature (value) will be set as 1 and all other as 0. This approach give more exact result based on all features in data set.
 
+Example of data normalization in ComplexLinearRegression implementation :
+
+*Inputed Data Set :*
+
+|No        | City           | Salary  |  Increase  |
+| -------- |:-------------:| :-----:|-----:|
+| 1        | Kyiv          | $2000  | 300  |
+| 2        | Lviv          | $2000  | 100  |
+| 3        | Odessa        | $1900  | 300  |
+
+
+
+*Normalized Data Set:*
+
+|No        | Kyiv   |  Lviv  |  Odessa | Salary  |  Increase  |
+| -------- |:------:|:------:|:-------:|:-------:|-----:|
+| 1        | 1      |   0    |    0    | $2000  | 300  |
+| 2        | 0      |   1    |    0    | $2000  | 100  |
+| 3        | 0      |   0    |    1    | $1900  | 300  |
+
 #### Weka implementation
 - Package : package org.ar.ml.examples.weka;
 - Class : SimpleLinearRegression.java or ComplexLinearRegression.java
