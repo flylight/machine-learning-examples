@@ -8,9 +8,11 @@ import weka.core.converters.CSVLoader;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -42,7 +44,7 @@ public class ComplexLinearRegression {
     dataSet = openTrainingDataSet(dataSetFile);
     String targetVariableName = dataSet.attribute(targetVariableIndex).name();
 
-    normalizeDataSet(true);
+    normalizeDataSet(removeFirstColumn);
 
     dataSet.setClassIndex(dataSet.attribute(targetVariableName).index());
 
@@ -79,12 +81,14 @@ public class ComplexLinearRegression {
     Map<String, Set<String>> attributeToValuesMap = new HashMap<>();
 
     //Collect possible attributes and their unique values
-    for (int i = 0; i < dataSet.numAttributes(); i++) {
-      Attribute attribute = dataSet.attribute(i);
+    Enumeration<Attribute> attributes = dataSet.enumerateAttributes();
+    while (attributes.hasMoreElements()) {
+      Attribute attribute = attributes.nextElement();
       if (!attribute.isNumeric()) {
         Set<String> values = new HashSet<>();
-        for (int j = 0; j < attribute.numValues(); j++) {
-          values.add(attribute.value(j).trim().replace(" ", "_"));
+        Enumeration<Object> valuesEnumeration = attribute.enumerateValues();
+        while (valuesEnumeration.hasMoreElements()) {
+          values.add(String.valueOf(valuesEnumeration.nextElement()).trim().replace(" ", "_"));
         }
         attributeToValuesMap.put(attribute.name(), values);
       }
@@ -92,21 +96,17 @@ public class ComplexLinearRegression {
 
     //Populate data set with new features (each unique value) and then define value if this new
     // feature correspond to textual value in attribute that replacing
-    attributeToValuesMap.forEach((s, strings) -> {
-      for (String value : strings) {
+    attributeToValuesMap.forEach((featureName, strings) -> {
+      strings.forEach(value -> {
         dataSet.insertAttributeAt(new Attribute(value), 0);
-      }
-      for (String value : strings) {
-        dataSet.listIterator()
-            .forEachRemaining(instance -> instance
-                .setValue(dataSet.attribute(value).index(),
-                    instance.stringValue(dataSet.attribute(s).index()).equals(value) ? 1 : 0));
-      }
+        dataSet.listIterator().forEachRemaining(instance ->
+            instance.setValue(dataSet.attribute(value).index(),
+                    instance.stringValue(dataSet.attribute(featureName).index()).equals(value) ? 1 : 0));
+      });
     });
 
     dataSet.deleteAttributeType(Attribute.NOMINAL);
     dataSet.deleteStringAttributes();
-
   }
 
   private Instances openTrainingDataSet(File dataSet) throws IOException {

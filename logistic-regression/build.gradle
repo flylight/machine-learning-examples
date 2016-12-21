@@ -1,0 +1,12 @@
+buildscript {
+    repositories {
+        jcenter()
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
+dependencies {
+    compile group: "nz.ac.waikato.cms.weka", name: "weka-stable", version: "$wekaVersion"
+    compile group: "junit", name: "junit", version: "$junit"
+}
