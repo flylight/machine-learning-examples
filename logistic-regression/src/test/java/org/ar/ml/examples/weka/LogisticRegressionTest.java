@@ -27,8 +27,8 @@ public class LogisticRegressionTest {
 
     Instance candidateInsatnce = complexLinearRegression.getDataSet().firstInstance();
 
-    System.out.println("ANSWER : " + complexLinearRegression.predict(candidateInsatnce));
+    String predictedCity = complexLinearRegression.predict(candidateInsatnce);
 
-    //assertEquals(candidateInsatnce.attribute(1).value(0), predictedCity);
+    assertEquals(candidateInsatnce.attribute(1).value(0), predictedCity);
   }
 }

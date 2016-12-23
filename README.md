@@ -1,7 +1,11 @@
 # machine-learning-examples
 Machine learning examples using popular approaches like Linear Regression, Logistic Regression (classification) and Neural Network on different solutions
 
+**Training data set was took from public resource provided by [DOU.ua](https://dou.ua/) and does not
+contain any sensitive information.**
+
 ## Linear regression example
+- module : linear-regression
 
 ### Difference between Simple and Complex linear regression implementation
 
@@ -49,4 +53,35 @@ SimpleLinearRegression simpleLinearRegression = new SimpleLinearRegression(new F
 double result = simpleLinearRegression.predict(myInsatnce);
 ```
 
+## Logistic regression example
+- module : logistic-regression
 
+This kind of regression using to classify data and as result we expect to receive class identifier 
+instead of real number.
+
+#### Weka implementation
+- Package : package org.ar.ml.examples.weka;
+- Class : LogisticRegression.java
+
+The main difference is that we have to use non numerical target variable to build classification 
+algorithm. In example (test class "LogisticRegressionTest.java") I used "city" feature as target variable
+and build model that can predict into which city I have to go work according to my salary expectation,
+age, experience etc. 
+
+This example id not good enough as we have very large training data set and to may different classes
+(24 different cities in data set). So for me the training of such motel took about 24 hours. 
+
+To make it faster I recommend to use Neural network or decrease set of features, for example it would be easier
+for model to learn not more than 3-5 classes. It will be possible if we use salary indication and create 
+tree classes like "Junior Engineer", "Middle Engineer", "Senior Engineer".
+
+*Example for Logistic regression usage*
+
+```
+//Build logistic regression used data set file and define removing of ordering line and target varuable index
+LogisticRegression complexLinearRegression = new LogisticRegression(dataSetFile, true, 1);
+
+//Expecting to retrieve predicted result as class defined in datased as terget variable
+String predictedResult = complexLinearRegression.predict(candidateInsatnce);
+
+```
