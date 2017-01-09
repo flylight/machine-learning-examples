@@ -18,17 +18,19 @@ public class LogisticRegressionTest {
   private static final String DATA_SET_PATH = "dou/2016_may_mini.csv";
 
   @Test
-  public void predictSalaryForDifferentCityTest() throws Exception {
+  public void predictCandidateSex() throws Exception {
     //GIVEN
     File dataSetFile = Paths.get(getClass().getClassLoader().getResource(DATA_SET_PATH).toURI()).toFile();
 
     LogisticRegression complexLinearRegression = new LogisticRegression(dataSetFile,
-        true, 1);
+        true, 10);
 
-    Instance candidateInsatnce = complexLinearRegression.getDataSet().firstInstance();
+    Instance candidateInstance = complexLinearRegression.getDataSet().firstInstance();
 
-    String predictedCity = complexLinearRegression.predict(candidateInsatnce);
+    String IsStudent = complexLinearRegression.predict(candidateInstance);
 
-    assertEquals(candidateInsatnce.attribute(1).value(0), predictedCity);
+    int newPositionOfTargetVariable = complexLinearRegression.getDataSet().attribute("Пол").index();
+
+    assertEquals(candidateInstance.attribute(newPositionOfTargetVariable).value(0), IsStudent);
   }
 }

@@ -17,5 +17,6 @@ subprojects {
 
 ext {
   wekaVersion = '3.8.0'
+  ncogVersion = '3.3.0'
   junit = '4.12'
 }

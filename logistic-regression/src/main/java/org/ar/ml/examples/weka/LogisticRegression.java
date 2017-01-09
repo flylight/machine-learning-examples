@@ -23,7 +23,15 @@ public class LogisticRegression {
 
   private int targetVariableIndex;
 
-
+  /**
+   * Build Logistic regression model that able to predict to which class correspond the candidate.
+   *
+   * @param dataSetFile Data set file on hard disk.
+   * @param removeFirstColumn If your data set contain ordering number it is required to be removed.
+   *                          In other case the predicted result can be not exact.
+   * @param targetVariableIndex Index of target variable that represent class of instance.
+   * @throws Exception May throw exception in any stage of data set reading, normalizing or model training.
+   */
   public LogisticRegression(File dataSetFile, boolean removeFirstColumn,
                             int targetVariableIndex) throws Exception {
     this.targetVariableIndex = targetVariableIndex;
@@ -37,11 +45,22 @@ public class LogisticRegression {
     logisticRegressionModel.buildClassifier(dataSet);
   }
 
+  /**
+   * Predict candidate class based on target variable used before model train.
+   *
+   * @param instanceToPredict Instance to prediction (Candidate)
+   * @return Predicted class that correspond to candidate features
+   * @throws Exception May throw exception when classify
+   */
   public String predict(Instance instanceToPredict) throws Exception {
     return dataSet.classAttribute().value(
         (int)logisticRegressionModel.classifyInstance(instanceToPredict));
   }
 
+  /**
+   * Get normalized data set used to model train.
+   * @return {@link Instances} Data set.
+   */
   public Instances getDataSet() {
     return dataSet;
   }
@@ -82,14 +101,16 @@ public class LogisticRegression {
       }
     });
 
+    String targetVariableName = dataSet.attribute(targetVariableIndex).name();
     for (int i = 0; i < dataSet.numAttributes(); ) {
       Attribute attribute = dataSet.attribute(i);
-      if (!attribute.isNumeric() && i != targetVariableIndex) {
+      if (!attribute.isNumeric() && !attribute.name().equals(targetVariableName)) {
         dataSet.deleteAttributeAt(i);
       } else {
         i++;
       }
     }
+    targetVariableIndex = dataSet.attribute(targetVariableName).index();
   }
 
   private Instances openTrainingDataSet(File dataSet) throws IOException {

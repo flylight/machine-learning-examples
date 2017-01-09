@@ -8,5 +8,6 @@ buildscript {
 
 dependencies {
   compile group: "nz.ac.waikato.cms.weka", name: "weka-stable", version: "$wekaVersion"
+  compile group: "org.encog", name: "encog-core", version: "$ncogVersion"
   compile group: "junit", name: "junit", version: "$junit"
 }
